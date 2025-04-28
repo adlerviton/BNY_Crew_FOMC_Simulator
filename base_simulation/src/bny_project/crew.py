@@ -9,21 +9,17 @@ from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 import os
 
 ### Add knowledge source, must add pdfs and csv in knoweldege folder
-date1 = "22_1"
-date2 = "23_2"
+date1 = "17_12"
 pdf_source = PDFKnowledgeSource(
     file_paths=[
         f"{date1} beige book.pdf",
-        f"{date1} current macro.pdf",
+        f"{date1} current macro 1.pdf",
         f"{date1} dot plot description.pdf",
-        f"{date2} beige book.pdf",
-        f"{date2} current macro.pdf",
-        f"{date2} dot plot description.pdf",
         "Fed Explanation.pdf",
     ]
 )
 
-csv_source = CSVKnowledgeSource(file_paths=[f"{date1} historical macro.csv", f"{date2} historical macro.csv", "fedwatch.csv"])
+csv_source = CSVKnowledgeSource(file_paths=[f"{date1} historical macro.csv"])
 
 ### add llm
 managerllm = LLM(model="openai/gpt-4o", temperature=0.03)
@@ -95,19 +91,7 @@ class BnyCapstoneCrew:
         return Task(
             config=self.tasks_config["reveal_and_learn1"],
         )
-    
-    @task
-    def simulation_round2(self) -> Task:
-        return Task(
-            config=self.tasks_config["simulation_round2"],
-        )
-     
-    @task
-    def reveal_and_learn2(self) -> Task:
-        return Task(
-            config=self.tasks_config["reveal_and_learn2"],
-        )
-
+   
 
     @crew
     def crew(self) -> Crew:
@@ -122,8 +106,6 @@ class BnyCapstoneCrew:
             tasks=[
                 self.simulation_round1(),  # New simulation round before real discussion
                 self.reveal_and_learn1(),
-                self.simulation_round2(),  # New simulation round before real discussion
-                self.reveal_and_learn2(),
             ],
             process=Process.hierarchical,  # Hierarchical process
             verbose=True,
