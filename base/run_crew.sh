@@ -4,7 +4,7 @@
 #   chmod +x run_crew.sh
 #   ./run_crew.sh
 
-COUNT=4
+COUNT=5
 
 MD_FILE="fomc_simulation.md"  # markdown file to rename per run
 JSON_PREFIX="rate_summary"    # prefix for JSON output files

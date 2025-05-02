@@ -1,27 +1,25 @@
-from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
-
-
-from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
-
-
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from crewai.knowledge.source.csv_knowledge_source import CSVKnowledgeSource
+from crewai.memory import LongTermMemory, ShortTermMemory, EntityMemory
+from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 from crewai import LLM
 import os
+import os
 
-### Add knowledge sources individually
-date = "25_3"
+### Add knowledge source, must add pdfs and csv in knoweldege folder
+date = "22_6"
+pdf_source = PDFKnowledgeSource(
+    file_paths=[
+        f"{date} beige book.pdf",
+        f"{date} current macro 1.pdf",
+        f"{date} dot plot description.pdf",
+        "Fed Explanation.pdf",
+    ]
+)
 
-# Individual PDF knowledge sources
-beige_book_source = PDFKnowledgeSource(file_paths=[f"{date} beige book.pdf"])
-current_macro_source: PDFKnowledgeSource = PDFKnowledgeSource(file_paths=[f"{date} current macro 1.pdf"])
-dot_plot_source = PDFKnowledgeSource(file_paths=[f"{date} dot plot description.pdf"])
-fed_explanation_source: PDFKnowledgeSource = PDFKnowledgeSource(file_paths=["Fed Explanation.pdf"])
-
-# CSV knowledge source
-historical_macro_source = CSVKnowledgeSource(file_paths=[f"{date} historical macro.csv"])
+csv_source = CSVKnowledgeSource(file_paths=[f"{date} historical macro.csv"])
 
 ### add llm
 managerllm = LLM(model="openai/gpt-4o", temperature=0.03)
@@ -29,33 +27,35 @@ managerllm = LLM(model="openai/gpt-4o", temperature=0.03)
 
 gpt_llm = LLM(model="openai/gpt-4o-mini", temperature=0.03)
 
-# deepseek_llm = LLM(
-#     model="openrouter/deepseek/deepseek-r1",
-#     base_url="https://openrouter.ai/api/v1",
-#     api_key=os.environ["OPENROUTER_API_KEY"],
-# )
+deepseek_llm = LLM(
+    model="openrouter/deepseek/deepseek-r1",
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPENROUTER_API_KEY"],
+)
 
-# claude_llm = LLM(
-#     model="claude-3-5-sonnet-20240620",
-#     base_url="https://api.anthropic.com",
-#     api_key=os.environ["ANTHROPIC_API_KEY"],
-# )
+claude_llm = LLM(
+    model="claude-3-5-sonnet-20240620",
+    base_url="https://api.anthropic.com",
+    api_key=os.environ["ANTHROPIC_API_KEY"],
+)
 
 
 @CrewBase
 class BnyCapstoneCrew:
-    """FOMC Simulation crew with Chain of Draft and sequential knowledge source processing"""
+    """FOMC Simulation crew with initial member analysis"""
 
     agents_config = "config/agents.yaml"
+    # tasks not needed as we have to manually change them
     tasks_config = "config/tasks.yaml"
 
-    # Define agents with empty knowledge sources - we'll add them in specific tasks
+    # Define agents
     @agent
     def economist(self) -> Agent:
         return Agent(
             config=self.agents_config["economist"],
             verbose=True,
             llm="gpt-4o",
+            knowledge_sources=[pdf_source, csv_source],
             max_iter=50,
         )
 
@@ -65,6 +65,7 @@ class BnyCapstoneCrew:
             config=self.agents_config["Regional_Pragmatists"],
             verbose=True,
             llm=gpt_llm,
+            knowledge_sources=[pdf_source, csv_source],
             max_iter=50,
             memory=True,
         )
@@ -75,6 +76,7 @@ class BnyCapstoneCrew:
             config=self.agents_config["Academic_Balancers"],
             verbose=True,
             llm=gpt_llm,
+            knowledge_sources=[pdf_source, csv_source],
             max_iter=50,
             memory=True,
         )
@@ -85,6 +87,7 @@ class BnyCapstoneCrew:
             config=self.agents_config["Central_Policymakers"],
             verbose=True,
             llm=gpt_llm,
+            knowledge_sources=[pdf_source, csv_source],
             max_iter=50,
             memory=True,
         )
@@ -95,551 +98,245 @@ class BnyCapstoneCrew:
             config=self.agents_config["analyst"],
             verbose=True,
             llm=gpt_llm,
+            knowledge_sources=[pdf_source, csv_source],
             max_iter=50,
             memory=True,
         )
 
-    # Individual knowledge source analysis tasks
-    @task 
-    def analyze_current_macro(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze current macro data with minimal steps, 30 words max per step.
-            
-            Examine the current macro 1.pdf file only.
-            Focus on:
-            1. Key economic indicators
-            2. Recent trends
-            3. Implied probabilities from CME Fedwatch
-            
-            Format as:
-            "Indicator: value; trend; implication"
-            "Probability: scenario; percentage; meaning"
-            
-            Return analysis after "####".
-            """,
-            agent=self.economist(),
-            knowledge_source=current_macro_source,
-            expected_output="Concise, draft-style analysis of current macro data.",
-        )
-    
-    @task 
-    def analyze_historical_macro(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze historical macro data with minimal steps, 30 words max per step.
-            
-            Examine the historical macro data only.
-            Focus on:
-            1. Long-term trends
-            2. Historical patterns
-            3. Comparative contexts
-            
-            Format as:
-            "Trend: metric; direction; timeframe"
-            "Pattern: period; behavior; significance"
-            "Comparison: current vs. historical; implication"
-            
-            Return analysis after "####".
-            """,
-            agent=self.economist(),
-            knowledge_source=historical_macro_source,
-            expected_output="Concise, draft-style analysis of historical macro data.",
-        )
-
-    @task 
-    def regional_beige_book_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze Beige Book with minimal steps, 30 words max per step.
-            
-            As Regional Pragmatists, examine the Beige Book only.
-            Focus on:
-            1. Regional economic conditions
-            2. Business activity patterns
-            3. Labor markets
-            4. Inflation pressures
-            
-            Format as:
-            "Region: condition; trend; outlook"
-            "Sector: activity; challenges; opportunities"
-            "Labor: tightness; wages; hiring"
-            "Prices: level; direction; drivers"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Regional_Pragmatists(),
-            knowledge_source=beige_book_source,
-            expected_output="Concise, draft-style analysis of Beige Book from regional perspective.",
-        )
-    
-    @task 
-    def regional_current_macro_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze current macro with minimal steps, 30 words max per step.
-            
-            As Regional Pragmatists, examine the current macro 1.pdf only.
-            Focus on:
-            1. Regional implications
-            2. Market expectations
-            3. Near-term regional forecasts
-            
-            Format as:
-            "Indicator: value; regional impact"
-            "Market: expectation; regional significance"
-            "Forecast: scenario; regional outcome"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Regional_Pragmatists(),
-            knowledge_source=current_macro_source,
-            expected_output="Concise, draft-style analysis of current macro from regional perspective.",
-        )
-    
-    @task 
-    def regional_historical_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze historical data with minimal steps, 30 words max per step.
-            
-            As Regional Pragmatists, examine historical macro data only.
-            Focus on:
-            1. Regional historical patterns
-            2. Previous policy cycles
-            3. Regional economic responses
-            
-            Format as:
-            "Historical period: date; regional impact"
-            "Policy cycle: timing; regional effect"
-            "Response pattern: situation; regional outcome"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Regional_Pragmatists(),
-            knowledge_source=historical_macro_source,
-            expected_output="Concise, draft-style analysis of historical data from regional perspective.",
-        )
-    
-    @task 
-    def academic_dot_plot_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze dot plot with minimal steps, 30 words max per step.
-            
-            As Academic Balancers, examine dot plot description only.
-            Focus on:
-            1. Rate projections
-            2. Committee dispersion
-            3. Forward guidance implications
-            
-            Format as:
-            "Projection: timeframe; central tendency"
-            "Dispersion: range; meaning; significance"
-            "Guidance: signal; theoretical implication"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Academic_Balancers(),
-            knowledge_source=dot_plot_source,
-            expected_output="Concise, draft-style analysis of dot plot from academic perspective.",
-        )
-    
-    @task 
-    def academic_current_macro_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze current macro with minimal steps, 30 words max per step.
-            
-            As Academic Balancers, examine current macro 1.pdf only.
-            Focus on:
-            1. Theoretical implications
-            2. Model consistency
-            3. Equilibrium indicators
-            
-            Format as:
-            "Theory: evidence; consistency; deviation"
-            "Model: prediction; actual; adjustment"
-            "Equilibrium: indicator; status; direction"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Academic_Balancers(),
-            knowledge_source=current_macro_source,
-            expected_output="Concise, draft-style analysis of current macro from academic perspective.",
-        )
-    
-    @task 
-    def academic_historical_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze historical data with minimal steps, 30 words max per step.
-            
-            As Academic Balancers, examine historical macro data only.
-            Focus on:
-            1. Economic theory validation
-            2. Long-term equilibrium patterns
-            3. Policy effectiveness metrics
-            
-            Format as:
-            "Theory: principle; historical evidence"
-            "Equilibrium: measure; historical pattern"
-            "Policy: action; effectiveness; timing"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Academic_Balancers(),
-            knowledge_source=historical_macro_source,
-            expected_output="Concise, draft-style analysis of historical data from academic perspective.",
-        )
-    
-    @task 
-    def central_fed_explanation_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze Fed Explanation with minimal steps, 30 words max per step.
-            
-            As Central Policymakers, examine Fed Explanation only.
-            Focus on:
-            1. Policy framework principles
-            2. Communication strategy
-            3. Institutional considerations
-            
-            Format as:
-            "Framework: principle; application; importance"
-            "Communication: strategy; effectiveness; improvement"
-            "Institution: consideration; constraint; opportunity"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Central_Policymakers(),
-            knowledge_source=fed_explanation_source,
-            expected_output="Concise, draft-style analysis of Fed Explanation from central perspective.",
-        )
-    
-    @task 
-    def central_current_macro_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze current macro with minimal steps, 30 words max per step.
-            
-            As Central Policymakers, examine current macro 1.pdf only.
-            Focus on:
-            1. Policy stance implications
-            2. Financial stability considerations
-            3. Market communication aspects
-            
-            Format as:
-            "Policy: indicator; implication; adjustment"
-            "Stability: risk; assessment; response"
-            "Communication: signal; market reaction; adjustment"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Central_Policymakers(),
-            knowledge_source=current_macro_source,
-            expected_output="Concise, draft-style analysis of current macro from central perspective.",
-        )
-    
-    @task 
-    def central_historical_analysis(self) -> Task:
-        return Task(
-            description="""
-            Use Chain of Draft: Analyze historical data with minimal steps, 30 words max per step.
-            
-            As Central Policymakers, examine historical macro data only.
-            Focus on:
-            1. Policy precedents
-            2. Institutional memory
-            3. Long-term policy effectiveness
-            
-            Format as:
-            "Precedent: situation; action; outcome"
-            "Memory: event; lesson; application"
-            "Effectiveness: policy; result; timeframe"
-            
-            Return analysis after "####".
-            """,
-            agent=self.Central_Policymakers(),
-            knowledge_source=historical_macro_source,
-            expected_output="Concise, draft-style analysis of historical data from central perspective.",
-        )
-
-    # Define economist tasks with Chain of Draft
+    # Define economist tasks
     @task
     def probabilities_comment(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Comment on implied probabilities in current macro 1.pdf.
-            Keep steps minimal, 5 words max per step.
-            Format notes as "key point: data".
-            Return final points after "####".
-            
-            Explain what this means. Data from CME Fedwatch website.
+            Make a comment about the implied probabilities in the current macro 1.pdf file.
+            Explain what this means, this data comes from the CME Fedwatch website.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.analyst(),
-            knowledge_source=current_macro_source,
-            expected_output="Concise, draft-style comment on implied probabilities from current macro 1.pdf, explaining meaning in minimal steps.",
+            expected_output="A Chain of draft style comment about the implied probabilities in the current macro 1.pdf file, explaining what it means.",
         )
 
     @task
     def get_economic_suggestions(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Propose monetary policy options, 30 words max per step.
+            As the Fed's chief economist, analyze the current economic situation using the Beige Book, 
+            historical macro data, and current economic indicators provided to you. Pay attention to the 
+            probabilities implied by the futures market, mentioned in the current macro 1.pdf file.
             
-            Based on your analysis of:
-            - Current macro data
-            - Historical macro data
-            - Market-implied probabilities
+            Based on your analysis, propose 3 potential monetary policy solutions, each with:
+            1. A title that includes a specific interest rate plan with numerical adjustment
+            2. Detailed justification based on economic data
+            3. Projected economic outcomes
+            4. A reference to the implied probabilities of rate hikes and rate cuts mentioned
+            in the knowledge material.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             
-            Propose 3 monetary policy solutions, each with:
-            1. Title with specific numerical rate adjustment
-            2. Justification (economic data)
-            3. Projected outcomes
-            4. Reference to implied probabilities
+            You must not describe any preliminary leanings or advice on which option is best.
             
-            Format as "Solution #: rate change; justification; outcomes"
-            
-            No preliminary leanings/advice. Number solutions clearly.
-            Never propose options with 0% implied probability.
-            
-            Return solutions after "####".
+            Format your response clearly with each solution separated and numbered.
+            Never give options that have a 0 percent implied probability. For example, if the 
+            implied probabilities show a 0 percent chance of a rate hike, none of the options 
+            should include increasing the rate. A 100% chance of a rate hike or a rate cut does
+            not mean that the market favors a steady rate.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.economist(),
-            context=[
-                self.analyze_current_macro(),
-                self.analyze_historical_macro(),
-                self.probabilities_comment()
-            ],
-            expected_output="Concise, draft-style monetary policy options following Chain of Draft format.",
+            context=[self.probabilities_comment()],
+            expected_output="A comprehensive analysis with 3-5 detailed monetary policy solutions that include the numerical Fed Funds target rate adjustment in the title of each solution.",
         )
 
-    # Consolidated analysis tasks with Chain of Draft
+    # Define member analysis tasks
     @task
-    def regional_consolidated_analysis(self) -> Task:
+    def regional_analysis(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Analyze economist proposals with minimal steps, 30 words max per step.
+            As Regional Pragmatists, analyze the economist's proposed monetary policy solutions.
+            Also, make a prediction for what the Federal Funds Target rate will be at the end
+            of the year in 2025. Pay attention to the probabilities implied by the futures market, 
+            mentioned in the current macro 1.pdf file.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             
-            As Regional Pragmatists, combine your analyses of:
-            - Beige Book
-            - Current macro data
-            - Historical data
+            Consider:
+            1. The current economic data from the Beige Book
+            2. Historical macroeconomic data
+            3. Current macroeconmic data
+            4. The fed statement and minutes from the prior meeting
+            5. Your perspective on inflation, employment, and financial stability
             
-            Evaluate each proposed solution considering:
-            1. Regional economic impacts
-            2. Dual mandate alignment
-            3. Historical comparisons (exact dates)
-            4. Prediction for 2025 year-end Fed Funds rate
+            Provide your initial assessment of each proposed solution, highlighting strengths, 
+            weaknesses, and your preliminary leanings. Focus on how these policies align with the 
+            Fed's dual mandate of price stability and maximum employment. Make specific historical
+            comparisons using exact dates, and reference specific macroeconomic indicators.
             
-            Format as:
-            "Solution #: strength; weakness; regional impact"
-            "Historical comparison: date; similarity; outcome"
-            "Regional indicators: metric; trend; implication"
-            "Leaning: solution; rationale; regional benefit"
-            "2025 prediction: rate; reasoning"
-            
-            Return analysis after "####".
+            End with your preliminary thoughts on which direction you're leaning and why.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.Regional_Pragmatists(),
-            context=[
-                self.regional_beige_book_analysis(),
-                self.regional_current_macro_analysis(),
-                self.regional_historical_analysis(),
-                self.get_economic_suggestions(),
-                self.probabilities_comment()
-            ],
-            expected_output="Concise, draft-style consolidated analysis from Regional Pragmatists.",
+            context=[self.get_economic_suggestions(), self.probabilities_comment()],
+            expected_output="Regional Pragmatists' detailed analysis of proposed solutions with initial position, specific historical comparisons to exact dates, and a prediction for the Fed Funds target rate at the end of 2025.",
         )
 
     @task
-    def academic_consolidated_analysis(self) -> Task:
+    def academic_analysis(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Analyze economist proposals with minimal steps, 30 words max per step.
+            As Academic Balancers, analyze the economist's proposed monetary policy solutions.
+            Also, make a prediction for what the Federal Funds Target rate will be at the end
+            of the year in 2025. Pay attention to the probabilities implied by the futures market, 
+            mentioned in the current macro 1.pdf file.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             
-            As Academic Balancers, combine your analyses of:
-            - Dot plot description
-            - Current macro data
-            - Historical data
+            Consider:
+            1. The current economic data from the Beige Book
+            2. Historical macroeconomic data
+            3. Current macroeconmic data
+            4. The fed statement and minutes from the prior meeting
+            5. Your perspective on inflation, employment, and financial stability
             
-            Evaluate each proposed solution considering:
-            1. Theoretical consistency
-            2. Dual mandate alignment
-            3. Historical comparisons (exact dates)
-            4. Prediction for 2025 year-end Fed Funds rate
+            Provide your initial assessment of each proposed solution, highlighting strengths, 
+            weaknesses, and your preliminary leanings. Focus on how these policies align with the 
+            Fed's dual mandate of price stability and maximum employment. Make specific historical
+            comparisons using exact dates, and reference specific macroeconomic indicators.
             
-            Format as:
-            "Solution #: strength; weakness; theoretical alignment"
-            "Historical comparison: date; similarity; outcome"
-            "Academic indicators: metric; trend; implication"
-            "Leaning: solution; rationale; theoretical basis"
-            "2025 prediction: rate; reasoning"
-            
-            Return analysis after "####".
+            End with your preliminary thoughts on which direction you're leaning and why.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.Academic_Balancers(),
-            context=[
-                self.academic_dot_plot_analysis(),
-                self.academic_current_macro_analysis(),
-                self.academic_historical_analysis(),
-                self.get_economic_suggestions(),
-                self.probabilities_comment()
-            ],
-            expected_output="Concise, draft-style consolidated analysis from Academic Balancers.",
+            context=[self.get_economic_suggestions(), self.probabilities_comment()],
+            expected_output="Academic Balancers' detailed analysis of proposed solutions with initial position, specific historical comparisons to exact dates, and a prediction for the Fed Funds target rate at the end of 2025.",
         )
 
     @task
-    def central_consolidated_analysis(self) -> Task:
+    def central_analysis(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Analyze economist proposals with minimal steps, 30 words max per step.
+            As Central Policymakers, analyze the economist's proposed monetary policy solutions.
+            Also, make a prediction for what the Federal Funds Target rate will be at the end
+            of the year in 2025. Pay attention to the probabilities implied by the futures market, 
+            mentioned in the current macro 1.pdf file.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             
-            As Central Policymakers, combine your analyses of:
-            - Fed Explanation
-            - Current macro data
-            - Historical data
+            Consider:
+            1. The current economic data from the Beige Book
+            2. Historical macroeconomic data
+            3. Current macroeconmic data
+            4. The fed statement and minutes from the prior meeting
+            5. Your perspective on inflation, employment, and financial stability
             
-            Evaluate each proposed solution considering:
-            1. Policy framework alignment
-            2. Dual mandate balance
-            3. Historical comparisons (exact dates)
-            4. Prediction for 2025 year-end Fed Funds rate
+            Provide your initial assessment of each proposed solution, highlighting strengths, 
+            weaknesses, and your preliminary leanings. Focus on how these policies align with the 
+            Fed's dual mandate of price stability and maximum employment. Make specific historical
+            comparisons using exact dates, and reference specific macroeconomic indicators.
             
-            Format as:
-            "Solution #: strength; weakness; policy alignment"
-            "Historical comparison: date; similarity; outcome"
-            "Policy indicators: metric; trend; implication"
-            "Leaning: solution; rationale; policy basis"
-            "2025 prediction: rate; reasoning"
-            
-            Return analysis after "####".
+            End with your preliminary thoughts on which direction you're leaning and why.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.Central_Policymakers(),
-            context=[
-                self.central_fed_explanation_analysis(),
-                self.central_current_macro_analysis(),
-                self.central_historical_analysis(),
-                self.get_economic_suggestions(),
-                self.probabilities_comment()
-            ],
-            expected_output="Concise, draft-style consolidated analysis from Central Policymakers.",
+            context=[self.get_economic_suggestions(), self.probabilities_comment()],
+            expected_output="Central Policymakers' detailed analysis of proposed solutions with initial position, specific historical comparisons to exact dates, and a prediction for the Fed Funds target rate at the end of 2025.",
         )
 
-    # Define individual discussion tasks with Chain of Draft
+    # Define individual discussion tasks for each member
     @task
     def regional_discussion(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Respond to analyses with minimal steps, 30 words max per step.
+            As Regional Pragmatists, respond to the initial analyses provided by your colleagues:
             
-            As Regional Pragmatists:
-            1. Address key points from others
-            2. Defend/clarify your position
-            3. Note any mind changing
-            4. Highlight regional considerations
+            1. Address key points raised by other members that align with or differ from your perspective
+            2. Clarify or defend your position based on questions or concerns from others
+            3. Note any shifts in your thinking based on others' analyses
+            4. Highlight regional economic considerations that may have been overlooked
             
-            Format as:
-            "Member point: agreement/disagreement; reason"
-            "Position clarification: point; rationale"
-            "Regional factors: indicator; implication"
-            "Updated leaning: solution; reason"
-            "Updated 2025 prediction: rate"
-            
-            Return discussion after "####".
+            Be specific in your references to other members' positions. Provide your assessment
+            of where the committee appears to be leaning and the key factors that should inform the final decision.
+            Be sure to continue to reference specific historical comparisons, and specific macroeconomic indicators.
+            Provide an updated prediction for the fed funds target rate at the end of 2025.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.Regional_Pragmatists(),
             context=[
-                self.regional_consolidated_analysis(),
-                self.academic_consolidated_analysis(),
-                self.central_consolidated_analysis(),
+                self.regional_analysis(),
+                self.academic_analysis(),
+                self.central_analysis(),
             ],
-            expected_output="Concise, draft-style response from Regional Pragmatists to other members' analyses.",
+            expected_output="Regional Pragmatists' response to member analyses and assessment of committee direction. This includes a vote for what to do with the interest rate, specific historical comparisons to exact dates, mentions of specific metrics, and a prediction for the fed funds target rate at the end of 2025.",
         )
 
     @task
     def academic_discussion(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Respond to analyses with minimal steps, 30 words max per step.
+            As Academic Balancers, respond to the initial analyses provided by your colleagues:
             
-            As Academic Balancers:
-            1. Address key points from others
-            2. Defend/clarify your position
-            3. Note any mind changing
-            4. Highlight theoretical considerations
+            1. Address key points raised by other members that align with or differ from your perspective
+            2. Clarify or defend your position based on questions or concerns from others
+            3. Note any shifts in your thinking based on others' analyses
+            4. Highlight the most important considerations that should guide the committee's decision
             
-            Format as:
-            "Member point: agreement/disagreement; reason"
-            "Position clarification: point; rationale"
-            "Academic factors: concept; implication"
-            "Updated leaning: solution; reason"
-            "Updated 2025 prediction: rate"
-            
-            Return discussion after "####".
+            Be specific in your references to other members' positions. Be sure to continue to reference
+            specific historical comparisons, and specific macroeconomic indicators.
+            Provide an updated prediction for the fed funds target rate at the end of 2025.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.Academic_Balancers(),
             context=[
-                self.regional_consolidated_analysis(),
-                self.academic_consolidated_analysis(),
-                self.central_consolidated_analysis(),
+                self.regional_analysis(),
+                self.academic_analysis(),
+                self.central_analysis(),
             ],
-            expected_output="Concise, draft-style response from Academic Balancers to other members' analyses.",
+            expected_output="Academic Balancers' response to member analyses. This includes a vote for what to do with the interest rate, specific historical comparisons to exact dates, mentions of specific metrics, and a prediction for the fed funds target rate at the end of 2025.",
         )
 
     @task
     def central_discussion(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Respond to analyses with minimal steps, 30 words max per step.
+            As Central Policymakers, respond to the initial analyses provided by your colleagues:
             
-            As Central Policymakers:
-            1. Address key points from others
-            2. Defend/clarify your position
-            3. Note any mind changing
-            4. Highlight policy considerations
+            1. Address key points raised by other members that align with or differ from your perspective
+            2. Clarify or defend your position based on questions or concerns from others
+            3. Note any shifts in your thinking based on others' analyses
             
-            Format as:
-            "Member point: agreement/disagreement; reason"
-            "Position clarification: point; rationale"
-            "Policy factors: principle; implication"
-            "Updated leaning: solution; reason"
-            "Updated 2025 prediction: rate"
-            
-            Return discussion after "####".
+            Be specific in your references to other members' positions. Be sure to continue to reference
+            specific historical comparisons, and specific macroeconomic indicators.
+            Provide an updated prediction for the fed funds target rate at the end of 2025.
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             """,
             agent=self.Central_Policymakers(),
             context=[
-                self.regional_consolidated_analysis(),
-                self.academic_consolidated_analysis(),
-                self.central_consolidated_analysis(),
+                self.regional_analysis(),
+                self.academic_analysis(),
+                self.central_analysis(),
             ],
-            expected_output="Concise, draft-style response from Central Policymakers to other members' analyses.",
+            expected_output="Central Policymakers' response to member analyses. This includes a vote for what to do with the interest rate, specific historical comparisons to exact dates, mentions of specific metrics, and a prediction for the fed funds target rate at the end of 2025.",
         )
 
     @task
     def regional_vote(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Cast final vote with minimal steps, 30 words max per step.
+            As Regional Pragmatists, it is time to cast your final vote and prediction.
             
-            As Regional Pragmatists, vote on:
-            1. Preferred policy option
-            2. Interest rate adjustment
-            3. Historical comparisons (years)
-            4. Specific metrics justification
-            5. 2025 rate prediction (exact number)
-            
-            Format exactly as:
+            1. Clearly state which policy option you are voting for
+            2. Provide a concise explanation for your vote (1-2 paragraphs)
+            3. Include historical comparisons referencing specific years
+            4. Make sure to reference specific macroeconomic metrics/indicators
+            5. If applicable, note any reservations or conditions to your support
+            6. Make a prediction for the fed funds target rate at the end of 2025, a specific number, not a range.
+
+            The votes should be in terms of the change in interest rate, meaning if the vote is to "maintain", that means "0.00%",
+            a vote to increase by 25 bps means "0.25%", and a vote to deecrease by 25 bps would mean "-0.25%".
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
+
+            Format your response as:
             Regional Pragmatist:
             POLICY VOTE: [Policy Option #]
-            INTEREST RATE VOTE: [Rate adjustment]
-            SPECIFIC HISTORICAL COMPARISONS: [years]
-            EXPLANATION: [Metrics-based justification]
-            PREDICTION FOR 2025: [Exact rate]
-            
-            Return vote after "####".
+            INTEREST RATE VOTE: [The interest rate adjustment included in the policy option you voted for]
+            SPECIFIC HISTORICAL COMPARISONS: [historical comparisons by years]
+            EXPLANATION: [Your explanation including specific metrics]
+            PREDICTION FOR 2025: [your final prediction for the fed funds target rate at the end of 2025, a specific number, not a range]
             """,
             agent=self.Regional_Pragmatists(),
             context=[
@@ -647,31 +344,33 @@ class BnyCapstoneCrew:
                 self.academic_discussion(),
                 self.central_discussion(),
             ],
-            expected_output="Formatted vote from Regional Pragmatists following exact template format.",
+            expected_output="Clear vote with formatted response as: Regional Pragmatist, POLICY VOTE: [Policy Option #], INTEREST RATE VOTE: [The interest rate adjustment included in the policy option you voted for], SPECIFIC HISTORICAL COMPARISONS: [historical comparisons by years], EXPLANATION: [Your explanation including specific metrics], PREDICTION FOR 2025: [your final prediction for the fed funds target rate at the end of 2025].",
         )
 
     @task
     def academic_vote(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Cast final vote with minimal steps, 30 words max per step.
+            As Academic Balancers, it is time to cast your final vote and prediction.
             
-            As Academic Balancers, vote on:
-            1. Preferred policy option
-            2. Interest rate adjustment
-            3. Historical comparisons (years)
-            4. Specific metrics justification
-            5. 2025 rate prediction (exact number)
+            1. Clearly state which policy option you are voting for
+            2. Provide a concise explanation for your vote (1-2 paragraphs)
+            3. Include historical comparisons referencing specific years
+            4. Make sure to reference specific macroeconomic metrics/indicators
+            5. If applicable, note any reservations or conditions to your support
+            6. Make a prediction for the fed funds target rate at the end of 2025, a specific number, not a range. 
             
-            Format exactly as:
+            The votes should be in terms of the change in interest rate, meaning if the vote is to "maintain", that means "0.00%",
+            a vote to increase by 25 bps means "0.25%", and a vote to deecrease by 25 bps would mean "-0.25%".
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
+
+            Format your response as:
             Academic Balancer:
             POLICY VOTE: [Policy Option #]
-            INTEREST RATE VOTE: [Rate adjustment]
-            SPECIFIC HISTORICAL COMPARISONS: [years]
-            EXPLANATION: [Metrics-based justification]
-            PREDICTION FOR 2025: [Exact rate]
-            
-            Return vote after "####".
+            INTEREST RATE VOTE: [The interest rate adjustment included in the policy option you voted for]
+            SPECIFIC HISTORICAL COMPARISONS: [historical comparisons by years]
+            EXPLANATION: [Your explanation including specific metrics]
+            PREDICTION FOR 2025: [your final prediction for the fed funds target rate at the end of 2025, a specific number, not a range]
             """,
             agent=self.Academic_Balancers(),
             context=[
@@ -679,31 +378,33 @@ class BnyCapstoneCrew:
                 self.academic_discussion(),
                 self.central_discussion(),
             ],
-            expected_output="Formatted vote from Academic Balancers following exact template format.",
+            expected_output="Clear vote with formatted response as: Academic Balancer, POLICY VOTE: [Policy Option #], INTEREST RATE VOTE: [The interest rate adjustment included in the policy option you voted for], SPECIFIC HISTORICAL COMPARISONS: [historical comparisons by years], EXPLANATION: [Your explanation including specific metrics], PREDICTION FOR 2025: [your final prediction for the fed funds target rate at the end of 2025].",
         )
 
     @task
     def central_vote(self) -> Task:
         return Task(
             description="""
-            Use Chain of Draft: Cast final vote with minimal steps, 30 words max per step.
+            As Central Policymakers, it is time to cast your final vote and prediction.
             
-            As Central Policymakers, vote on:
-            1. Preferred policy option
-            2. Interest rate adjustment
-            3. Historical comparisons (years)
-            4. Specific metrics justification
-            5. 2025 rate prediction (exact number)
+            1. Clearly state which policy option you are voting for
+            2. Provide a concise explanation for your vote (1-2 paragraphs)
+            3. Include historical comparisons referencing specific years
+            4. Make sure to reference specific macroeconomic metrics/indicators
+            5. If applicable, note any reservations or conditions to your support
+            6. Make a prediction for the fed funds target rate at the end of 2025, a specific number, not a range.
+
+            The votes should be in terms of the change in interest rate, meaning if the vote is to "maintain", that means "0.00%",
+            a vote to increase by 25 bps means "0.25%", and a vote to deecrease by 25 bps would mean "-0.25%".
+            Use Chain of Draft: Analyze with minimal steps, 30 words max per step.
             
-            Format exactly as:
+            Format your response as:
             Central Policymaker:
             POLICY VOTE: [Policy Option #]
-            INTEREST RATE VOTE: [Rate adjustment]
-            SPECIFIC HISTORICAL COMPARISONS: [years]
-            EXPLANATION: [Metrics-based justification]
-            PREDICTION FOR 2025: [Exact rate]
-            
-            Return vote after "####".
+            INTEREST RATE VOTE: [The interest rate adjustment included in the policy option you voted for]
+            SPECIFIC HISTORICAL COMPARISONS: [historical comparisons by years]
+            EXPLANATION: [Your explanation including specific metrics]
+            PREDICTION FOR 2025: [your final prediction for the fed funds target rate at the end of 2025. A specific number, not a range]
             """,
             agent=self.Central_Policymakers(),
             context=[
@@ -711,68 +412,69 @@ class BnyCapstoneCrew:
                 self.academic_discussion(),
                 self.central_discussion(),
             ],
-            expected_output="Formatted vote from Central Policymakers following exact template format.",
+            expected_output="Clear vote with formatted response as: Central Policymaker, POLICY VOTE: [Policy Option #], INTEREST RATE VOTE: [The interest rate adjustment included in the policy option you voted for], SPECIFIC HISTORICAL COMPARISONS: [historical comparisons by years], EXPLANATION: [Your explanation including specific metrics], PREDICTION FOR 2025: [your final prediction for the fed funds target rate at the end of 2025].",
         )
 
     @task
+    ### change this one
     def other_summary(self) -> Task:
         return Task(
             description="""
-           Use Chain of Draft to extract information:
-           
-           1. Extract all historical years/dates
-           2. Extract all metrics mentioned
-           3. Format as JSON
-           
-           Steps:
-           "Dates found: [list]"
-           "Metrics found: [list]"
-           "JSON: structure as required"
-           
-           Format exactly as:
-           {{
-               "exact_historical_dates_referenced": ["year1-year2", "year3-year4", ..., "year-year"],
-               "exact_metrics_mentioned": ["Metric 1", "Metric 2", ..., "Metric n"]
-           }}
-           
-           No text or explanations around JSON.
-           Return JSON after "####".
-           """,
+            As the FOMC analyst, draft a **formal public statement** on behalf of the Federal Open Market Committee (FOMC), with a total length of approximately **2,000 words**.
+
+            This statement should:
+            - Clearly announce the interest rate decision made by the committee (based on the final votes).
+            - Summarize the full set of economic conditions informing the decision, including inflation trends, labor market developments, GDP growth, financial stability, and risks.
+            - Reference macroeconomic indicators and specific historical analogs (e.g., "similar to conditions in 1994-95") mentioned by members.
+            - Include regional variations or sectoral insights if discussed.
+            - Provide forward guidance on future rate policy and the outlook for inflation and employment.
+            - Be written in **the same tone, structure, and formality** as official FOMC post-meeting statements.
+
+            Formatting Instructions:
+            - Begin with a 1–2 paragraph overview of the decision.
+            - Follow with a deep dive into the economic data and risk assessments (~1,200–1,500 words).
+            - End with detailed forward guidance and policy direction (~300–400 words).
+            - Avoid headings or markdown.
+
+            Word Count Guidance:
+            - Aim for approximately 2,000 words (you may slightly exceed this if necessary).
+            - If needed, use sentence expansions or insert additional nuance consistent with Fed tone.
+            """,
             agent=self.analyst(),
             context=[
+                self.regional_analysis(),
+                self.academic_analysis(),
+                self.central_analysis(),
+                self.regional_discussion(),
+                self.academic_discussion(),
+                self.central_discussion(),
                 self.regional_vote(),
                 self.academic_vote(),
                 self.central_vote(),
             ],
-            expected_output="Clean JSON object with historical dates and metrics mentioned.",
+            expected_output="""
+            A fully formatted FOMC post-meeting statement, ~2,000 words long, suitable for public release. 
+            It includes: (1) the interest rate decision, (2) macroeconomic and financial assessment, 
+            (3) forward guidance. Written in professional FOMC style with no AI mention.
+            """,
         )
 
     @task
     def vote_summary(self) -> Task:
         return Task(
             description="""
-           Use Chain of Draft to extract votes:
-           
-           1. Extract interest rate votes
-           2. Format member votes as JSON
-           
-           Steps:
-           "Regional vote: [extract]"
-           "Academic vote: [extract]"
-           "Central vote: [extract]"
-           "JSON: structure as required"
-           
-           Format exactly as:
+           As the FOMC analyst, prepare a JSON summary of the final votes from all three members voting tasks.
+           The votes should be in terms of the change in interest rate they voted for, accurately reflecting INTEREST RATE VOTE from each respective member's voting task.
+           The output must strictly follow this format:
            {{
                "rate_votes": [
-                   {{"member": "Regional Pragmatist", "vote": "#.##%"}},
-                   {{"member": "Academic Balancer", "vote": "#.##%"}},
-                   {{"member": "Central Policymaker", "vote": "#.##%"}}
-               ]
-           }}
-           
-           No text or explanations around JSON.
-           Return JSON after "####".
+                   {{"member": "Regional Pragmatist", "vote": "#.##%"}}, #INTEREST RATE VOTE from regional_vote task
+                   {{"member": "Academic Balancer", "vote": "#.##%"}}, #INTEREST RATE VOTE from academic_vote task
+                   {{"member": "Central Policymaker", "vote": "#.##%"}} #INTEREST RATE VOTE from central_vote task
+               ],
+           Important Notes:
+           - The summary should accurately reflect the final votes from each member's voting task.
+           - The JSON must be correctly formatted with no additional text, markdown, or surrounding explanations.
            """,
             agent=self.analyst(),
             context=[
@@ -780,35 +482,35 @@ class BnyCapstoneCrew:
                 self.academic_vote(),
                 self.central_vote(),
             ],
-            expected_output="Clean JSON object with member votes.",
+            expected_output="""
+           {{
+               "rate_votes": [
+                   {{"member": "Regional Pragmatist", "vote": "#.##%"}}, #INTEREST RATE VOTE from regional_vote task
+                   {{"member": "Academic Balancer", "vote": "#.##%"}}, #INTEREST RATE VOTE from academic_vote task
+                   {{"member": "Central Policymaker", "vote": "#.##%"}} #INTEREST RATE VOTE from central_vote task
+               ]
+           }}
+           """,
         )
 
     @task
     def prediction_summary(self) -> Task:
         return Task(
             description="""
-           Use Chain of Draft to extract predictions:
-           
-           1. Extract 2025 rate predictions
-           2. Format member predictions as JSON
-           
-           Steps:
-           "Regional prediction: [extract]"
-           "Academic prediction: [extract]"
-           "Central prediction: [extract]"
-           "JSON: structure as required"
-           
-           Format exactly as:
+           As the FOMC analyst, prepare a JSON summary of the end of 2025 rate predictions from all three members voting tasks.
+           The predictions should accurately reflect PREDICTION FOR 2025 from each respective member's voting task.
+           The output must strictly follow this format:
            {{
                "rate_predictions": [
-                   {{"member": "Regional Pragmatist", "prediction": "#.##%"}},
-                   {{"member": "Academic Balancer", "prediction": "#.##%"}},
-                   {{"member": "Central Policymaker", "prediction": "#.##%"}}
+                   {{"member": "Regional Pragmatist", "prediction": "#.##%"}}, #PREDICTION FOR 2025 from regional_vote task
+                   {{"member": "Academic Balancer", "prediction": "#.##%"}}, #PREDICTION FOR 2025 from academic_vote task
+                   {{"member": "Central Policymaker", "prediction": "#.##%"}} #PREDICTION FOR 2025 from central_vote task
                ]
            }}
-           
-           No text or explanations around JSON.
-           Return JSON after "####".
+
+           **Important Notes:**
+           - The summary should accurately reflect the final predictions from each member's voting task.
+           - The JSON must be correctly formatted with no additional text, markdown, or surrounding explanations.
            """,
             agent=self.analyst(),
             context=[
@@ -816,29 +518,25 @@ class BnyCapstoneCrew:
                 self.academic_vote(),
                 self.central_vote(),
             ],
-            expected_output="Clean JSON object with member predictions.",
+            expected_output="""
+           {{
+               "rate_predictions": [
+                   {{"member": "Regional Pragmatist", "prediction": "#.##%"}}, #PREDICTION FOR 2025 from regional_vote task
+                   {{"member": "Academic Balancer", "prediction": "#.##%"}}, #PREDICTION FOR 2025 from academic_vote task
+                   {{"member": "Central Policymaker", "prediction": "#.##%"}} #PREDICTION FOR 2025 from central_vote task
+               ]
+           }}
+           """,
         )
 
     @task
     def summary_final(self) -> Task:
         return Task(
             description="""
-           Use Chain of Draft to combine summaries:
-           
-           1. Extract data from prior summaries
-           2. Combine into single JSON object
-           
-           Steps:
-           "Historical data: [extract]"
-           "Metrics data: [extract]"
-           "Votes data: [extract]"
-           "Predictions data: [extract]"
-           "Combined JSON: structure all together"
-           
-           Format exactly as:
+           Combine the outputs of other_summary, vote_summary, and prediction_summary into one JSON object while accurately reflecting the information from the three prior summary tasks. 
+           The output must strictly follow this format:
            {{
-               "exact_historical_dates_referenced": ["year1-year2", "year3-year4", ..., "year-year"],
-               "exact_metrics_mentioned": ["Metric 1", "Metric 2", ..., "Metric n"],
+                "fomc_public_statement": "Full FOMC-style qualitative statement text goes here.",
                "rate_votes": [
                    {{"member": "Regional Pragmatist", "vote": "#.##%"}},
                    {{"member": "Academic Balancer", "vote": "#.##%"}}, 
@@ -850,8 +548,9 @@ class BnyCapstoneCrew:
                    {{"member": "Central Policymaker", "prediction": "#.##%"}}
                ]
            }}
-           
-           No text or explanations around JSON.
+           **Important Notes:**
+           - The summary should accurately reflect the information from other_summary, vote_summary, and prediction_summary.
+           - The JSON must be correctly formatted with no additional text, markdown, or surrounding explanations.
            """,
             agent=self.analyst(),
             context=[
@@ -859,13 +558,27 @@ class BnyCapstoneCrew:
                 self.vote_summary(),
                 self.prediction_summary(),
             ],
-            expected_output="Clean combined JSON object with all summary data.",
+            expected_output="""
+            {{
+                "fomc_public_statement": "Full FOMC-style qualitative statement text goes here.",
+                "rate_votes": [
+                    {{"member": "Regional Pragmatist", "vote": "#.##%"}},
+                    {{"member": "Academic Balancer", "vote": "#.##%"}}, 
+                    {{"member": "Central Policymaker", "vote": "#.##%"}} 
+                ],
+                "rate_predictions": [
+                    {{"member": "Regional Pragmatist", "prediction": "#.##%"}},
+                    {{"member": "Academic Balancer", "prediction": "#.##%"}},
+                    {{"member": "Central Policymaker", "prediction": "#.##%"}}
+                ]
+            }}
+            """,
             output_file="rate_summary.json",
         )
 
     @crew
     def crew(self) -> Crew:
-        """Creates the FOMC simulation crew with Chain of Draft"""
+        """Creates the FOMC simulation crew"""
         return Crew(
             agents=[
                 self.economist(),
@@ -875,51 +588,28 @@ class BnyCapstoneCrew:
                 self.analyst(),
             ],
             tasks=[
-                # Individual knowledge source analysis tasks
-                self.analyze_current_macro(),
-                self.analyze_historical_macro(),
+                # First get economic suggestions
                 self.probabilities_comment(),
-                
-                # Regional Pragmatists individual knowledge analysis
-                self.regional_beige_book_analysis(),
-                self.regional_current_macro_analysis(),
-                self.regional_historical_analysis(),
-                
-                # Academic Balancers individual knowledge analysis
-                self.academic_dot_plot_analysis(),
-                self.academic_current_macro_analysis(),
-                self.academic_historical_analysis(),
-                
-                # Central Policymakers individual knowledge analysis
-                self.central_fed_explanation_analysis(),
-                self.central_current_macro_analysis(),
-                self.central_historical_analysis(),
-                
-                # Economist proposals based on individual analyses
                 self.get_economic_suggestions(),
-                
-                # Consolidated analyses from each group
-                self.regional_consolidated_analysis(),
-                self.academic_consolidated_analysis(),
-                self.central_consolidated_analysis(),
-                
-                # Discussion phase
+                # Then have each member analyze the suggestions
+                self.regional_analysis(),
+                self.academic_analysis(),
+                self.central_analysis(),
+                # Then have individual discussion contributions from each member
                 self.regional_discussion(),
                 self.academic_discussion(),
                 self.central_discussion(),
-                
-                # Voting phase
+                # Then voting
                 self.regional_vote(),
                 self.academic_vote(),
                 self.central_vote(),
-                
-                # Summary phase
+                # Finally summary and statement
                 self.other_summary(),
                 self.vote_summary(),
                 self.prediction_summary(),
                 self.summary_final(),
             ],
-            process=Process.sequential,  
+            process=Process.sequential,  # Use sequential process to ensure proper order
             verbose=True,
             memory=True,
             output_log_file="fomc_simulation.md",

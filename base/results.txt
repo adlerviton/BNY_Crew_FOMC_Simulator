@@ -1136,3 +1136,654 @@ Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressrel
 Average SentenceTransformer cosine similarity over 4 runs:
 Similarity: 0.7420
 
+finishing
+Meeting Date: Feb 2023
+average agreement rate for votes: 66.66666666666667%
+[100.0, 80.0, 80.0]
+average agreement rate for predictions: 86.67%
+total agreement rate: 76.67%
+correct rate vote percentage = 46.666666666666664%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230201a.htm
+Average SentenceTransformer cosine similarity over 5 runs:
+Similarity: 0.7079
+
+finishing
+Meeting Date: March 2023
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 53.333333333333336%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230322a.htm
+Similarity: 0.7824
+
+finishing
+Meeting Date: May 2023
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230503a.htm
+Similarity: 0.7472
+
+finishing
+Meeting Date: June 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230614a.htm
+Similarity: 0.7470
+
+finishing
+Meeting Date: July 2023
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 46.666666666666664%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230726a.htm
+Similarity: 0.7348
+
+finishing
+Meeting Date: September 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230920a.htm
+Similarity: 0.7424
+
+finishing
+Meeting Date: November 2023
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241101a.htm
+Failed to retrieve the page: 404 Client Error: Not Found for url: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241101a.htm
+Similarity: -0.0022
+
+finishing
+Meeting Date: December 2023
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231213a.htm
+Similarity: 0.7685
+
+finishing
+Meeting Date: January 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240131a.htm
+Similarity: 0.7323
+
+finishing
+Meeting Date: March 2024
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240320a.htm
+Similarity: 0.7657
+
+finishing
+Meeting Date: May 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm
+Similarity: 0.7051
+
+finishing
+Meeting Date: June 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240612a.htm
+Similarity: 0.7187
+
+finishing
+Meeting Date: July 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240731a.htm
+Similarity: 0.7307
+
+finishing
+Meeting Date: September 2024
+average agreement rate for votes: 40.0%
+correct rate vote percentage = 40.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm
+Similarity: 0.7673
+
+finishing
+Meeting Date: November 2024
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 6.666666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241107a.htm
+Similarity: 0.7503
+
+finishing
+Meeting Date: December 2024
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241218a.htm
+Similarity: 0.7645
+
+finishing
+Meeting Date: Feb 2023
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 40.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230201a.htm
+Similarity: 0.7285
+
+finishing
+Meeting Date: March 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230322a.htm
+Similarity: 0.7004
+
+finishing
+Meeting Date: May 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230503a.htm
+Similarity: 0.7623
+
+finishing
+Meeting Date: June 2023
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 93.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230614a.htm
+Similarity: 0.7311
+
+finishing
+Meeting Date: July 2023
+average agreement rate for votes: 66.66666666666667%
+correct rate vote percentage = 66.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230726a.htm
+Similarity: 0.7603
+
+finishing
+Meeting Date: September 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230920a.htm
+Similarity: 0.7153
+
+finishing
+Meeting Date: November 2023
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231101a.htm
+Similarity: 0.7230
+
+finishing
+Meeting Date: December 2023
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231213a.htm
+Similarity: 0.7399
+
+finishing
+Meeting Date: January 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240131a.htm
+Similarity: 0.7285
+
+finishing
+Meeting Date: March 2024
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240320a.htm
+Similarity: 0.7449
+
+finishing
+Meeting Date: May 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm
+Similarity: 0.7036
+
+finishing
+Meeting Date: June 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240612a.htm
+Similarity: 0.6822
+
+finishing
+Meeting Date: July 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240731a.htm
+Similarity: 0.7111
+
+finishing
+Meeting Date: September 2024
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm
+Similarity: 0.7575
+
+finishing
+Meeting Date: November 2024
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 6.666666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241107a.htm
+Similarity: 0.7003
+
+finishing
+Meeting Date: December 2024
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241218a.htm
+Similarity: 0.7508
+
+finishing
+Meeting Date: Feb 2023
+average agreement rate for votes: 53.333333333333336%
+correct rate vote percentage = 26.666666666666668%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230201a.htm
+Similarity: 0.6787
+
+finishing
+Meeting Date: March 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 6.666666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230322a.htm
+Similarity: 0.7499
+
+finishing
+Meeting Date: May 2023
+average agreement rate for votes: 53.333333333333336%
+correct rate vote percentage = 40.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230503a.htm
+Similarity: 0.7283
+
+finishing
+Meeting Date: June 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230614a.htm
+Similarity: 0.6817
+
+finishing
+Meeting Date: July 2023
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230726a.htm
+Similarity: 0.7280
+
+finishing
+Meeting Date: September 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230920a.htm
+Similarity: 0.7086
+
+finishing
+Meeting Date: November 2023
+average agreement rate for votes: 53.333333333333336%
+correct rate vote percentage = 26.666666666666668%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231101a.htm
+Similarity: 0.7374
+
+finishing
+Meeting Date: December 2023
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 93.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231213a.htm
+Similarity: 0.7230
+
+finishing
+Meeting Date: January 2024
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240131a.htm
+Similarity: 0.6752
+
+finishing
+Meeting Date: March 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240320a.htm
+Similarity: 0.7122
+
+finishing
+Meeting Date: May 2024
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm
+Similarity: 0.6603
+
+finishing
+Meeting Date: June 2024
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 53.333333333333336%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240612a.htm
+Similarity: 0.6989
+
+finishing
+Meeting Date: July 2024
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240731a.htm
+Similarity: 0.7074
+
+finishing
+Meeting Date: September 2024
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm
+Similarity: 0.7088
+
+finishing
+Meeting Date: November 2024
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241107a.htm
+Similarity: 0.7182
+
+finishing
+Meeting Date: December 2024
+average agreement rate for votes: 40.0%
+correct rate vote percentage = 20.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241218a.htm
+Similarity: 0.7150
+
+finishing
+Meeting Date: December 2024
+average agreement rate for votes: 53.333333333333336%
+correct rate vote percentage = 20.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241218a.htm
+Similarity: 0.7175
+
+finishing
+Meeting Date: July 2023
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 66.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230726a.htm
+Similarity: 0.7512
+
+finishing
+Meeting Date: January 2018
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180131a.htm
+Similarity: 0.8192
+
+finishing
+
+
+finishing
+Meeting Date: May 2018
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180502a.htm
+Similarity: 0.8202
+
+finishing
+Meeting Date: June 2018
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 60.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180613a.htm
+Similarity: 0.8423
+
+finishing
+Meeting Date: August 2018
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180801a.htm
+Similarity: 0.7947
+
+finishing
+Meeting Date: September 2018
+average agreement rate for votes: 66.66666666666667%
+correct rate vote percentage = 33.333333333333336%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180926a.htm
+Similarity: 0.8222
+
+finishing
+Meeting Date: November 2018
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20181108a.htm
+Similarity: 0.8202
+
+finishing
+
+
+finishing
+Meeting Date: January 2018
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 80.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180131a.htm
+Similarity: 0.8380
+
+finishing
+Meeting Date: March 2018
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180321a.htm
+Similarity: 0.6777
+
+finishing
+
+
+finishing
+Meeting Date: June 2018
+average agreement rate for votes: 40.0%
+correct rate vote percentage = 40.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180613a.htm
+Similarity: 0.8338
+
+finishing
+Meeting Date: August 2018
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180801a.htm
+Similarity: 0.8078
+
+finishing
+Meeting Date: September 2018
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 20.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180926a.htm
+Similarity: 0.8051
+
+finishing
+Meeting Date: November 2018
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 93.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20181108a.htm
+Similarity: 0.7997
+
+finishing
+Meeting Date: December 2018
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20181219a.htm
+Similarity: 0.8257
+
+finishing
+Meeting Date: June 2022
+average agreement rate for votes: 46.666666666666664%
+correct rate vote percentage = 40.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm
+Similarity: 0.6387
+
+finishing
+Meeting Date: June 2022
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm
+Similarity: 0.6211
+
+finishing
+Meeting Date: June 2022
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm
+Similarity: 0.6298
+
+finishing
+Meeting Date: June 2022
+average agreement rate for votes: 53.333333333333336%
+correct rate vote percentage = 20.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm
+Similarity: 0.6482
+
+finishing
+Meeting Date: June 2022
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm
+Similarity: 0.6565
+
+finishing
+Meeting Date: May 2023
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 53.333333333333336%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230503a.htm
+Similarity: 0.7381
+
+finishing
+Meeting Date: June 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230614a.htm
+Similarity: 0.7484
+
+finishing
+Meeting Date: July 2023
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 60.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230726a.htm
+Similarity: 0.7622
+
+finishing
+Meeting Date: September 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20230920a.htm
+Similarity: 0.7348
+
+finishing
+Meeting Date: November 2023
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231101a.htm
+Similarity: 0.7563
+
+finishing
+Meeting Date: December 2023
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20231213a.htm
+Similarity: 0.7671
+
+finishing
+Meeting Date: January 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240131a.htm
+Similarity: 0.7221
+
+finishing
+Meeting Date: March 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240320a.htm
+Similarity: 0.7491
+
+finishing
+Meeting Date: May 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm
+Similarity: 0.7193
+
+finishing
+Meeting Date: June 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240612a.htm
+Similarity: 0.7060
+
+finishing
+Meeting Date: July 2024
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240731a.htm
+Similarity: 0.7219
+
+finishing
+Meeting Date: September 2024
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20240918a.htm
+Similarity: 0.7466
+
+finishing
+Meeting Date: November 2024
+average agreement rate for votes: 66.66666666666667%
+correct rate vote percentage = 6.666666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241107a.htm
+Similarity: 0.7268
+
+finishing
+Meeting Date: December 2024
+average agreement rate for votes: 93.33333333333333%
+correct rate vote percentage = 93.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20241218a.htm
+Similarity: 0.7443
+
+finishing
+Meeting Date: January 2018
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180131a.htm
+Similarity: 0.8164
+
+finishing
+Meeting Date: March 2018
+average agreement rate for votes: 86.66666666666667%
+correct rate vote percentage = 86.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180321a.htm
+Similarity: 0.7765
+
+finishing
+Meeting Date: May 2018
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180502a.htm
+Similarity: 0.8337
+
+finishing
+Meeting Date: June 2018
+average agreement rate for votes: 73.33333333333333%
+correct rate vote percentage = 73.33333333333333%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180613a.htm
+Similarity: 0.8416
+
+finishing
+Meeting Date: August 2018
+average agreement rate for votes: 100.0%
+correct rate vote percentage = 100.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180801a.htm
+Similarity: 0.8269
+
+finishing
+Meeting Date: September 2018
+average agreement rate for votes: 60.0%
+correct rate vote percentage = 60.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20180926a.htm
+Similarity: 0.7962
+
+finishing
+Meeting Date: November 2018
+average agreement rate for votes: 66.66666666666667%
+correct rate vote percentage = 46.666666666666664%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20181108a.htm
+Similarity: 0.8144
+
+finishing
+Meeting Date: December 2018
+average agreement rate for votes: 66.66666666666667%
+correct rate vote percentage = 66.66666666666667%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20181219a.htm
+Similarity: 0.8226
+
+finishing
+Meeting Date: June 2022
+average agreement rate for votes: 80.0%
+correct rate vote percentage = 0.0%
+Fetching FOMC statement from: https://www.federalreserve.gov/newsevents/pressreleases/monetary20220615a.htm
+Similarity: 0.6421
+

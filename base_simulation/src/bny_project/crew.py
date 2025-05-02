@@ -4,7 +4,8 @@ from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from crewai.knowledge.source.csv_knowledge_source import CSVKnowledgeSource
 from crewai import LLM
 from crewai.memory import LongTermMemory, ShortTermMemory, EntityMemory
-#from crewai.memory.storage.rag_storage import RAGStorage
+
+# from crewai.memory.storage.rag_storage import RAGStorage
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 import os
 
@@ -23,14 +24,19 @@ pdf_source = PDFKnowledgeSource(
     ]
 )
 
-csv_source = CSVKnowledgeSource(file_paths=[f"{date1} historical macro.csv", f"{date2} historical macro.csv", "fedwatch.csv"])
+csv_source = CSVKnowledgeSource(
+    file_paths=[
+        f"{date1} historical macro.csv",
+        f"{date2} historical macro.csv",
+        "fedwatch.csv",
+    ]
+)
 
 ### add llm
 managerllm = LLM(model="openai/gpt-4o", temperature=0.03)
 # Always keep manager as GPT 4o
 
 gpt_llm = LLM(model="openai/gpt-4o-mini", temperature=0.03)
-
 
 
 @CrewBase
@@ -82,32 +88,30 @@ class BnyCapstoneCrew:
             max_iter=50,
             memory=True,
         )
-     
+
     @task
     def simulation_round1(self) -> Task:
         return Task(
             config=self.tasks_config["simulation_round1"],
         )
-    
 
     @task
     def reveal_and_learn1(self) -> Task:
         return Task(
             config=self.tasks_config["reveal_and_learn1"],
         )
-    
+
     @task
     def simulation_round2(self) -> Task:
         return Task(
             config=self.tasks_config["simulation_round2"],
         )
-     
+
     @task
     def reveal_and_learn2(self) -> Task:
         return Task(
             config=self.tasks_config["reveal_and_learn2"],
         )
-
 
     @crew
     def crew(self) -> Crew:
@@ -129,9 +133,7 @@ class BnyCapstoneCrew:
             verbose=True,
             memory=True,
             long_term_memory=LongTermMemory(
-                storage=LTMSQLiteStorage(
-                    db_path="memory/fomc_longterm.db"
-                )
+                storage=LTMSQLiteStorage(db_path="memory/fomc_longterm.db")
             ),
             output_log_file="discussion.md",
         )

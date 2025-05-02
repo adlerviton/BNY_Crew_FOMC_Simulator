@@ -9,7 +9,7 @@ import os
 import os
 
 ### Add knowledge source, must add pdfs and csv in knoweldege folder
-date = "23_6"
+date = "22_6"
 pdf_source = PDFKnowledgeSource(
     file_paths=[
         f"{date} beige book.pdf",
@@ -598,8 +598,8 @@ class BnyCapstoneCrew:
             verbose=True,
             memory=True,
             # Uncomment to add simulation memory!
-            # long_term_memory=LongTermMemory(
-            #    storage=LTMSQLiteStorage(db_path="memory/fomc_longterm.db")
-            # ),
+            long_term_memory=LongTermMemory(
+                storage=LTMSQLiteStorage(db_path="memory/fomc_longterm.db")
+            ),
             output_log_file="fomc_simulation.md",
         )
