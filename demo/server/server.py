@@ -7,42 +7,50 @@ import shutil
 import os
 import json
 import asyncio
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, Set
 import sys
 import time
 import threading
+import re
+import traceback
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.bny_capstone_crew import BnyCapstoneCrew
+
+# from simulation import SimulationManager
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # frontend URL needs to be added here
+    allow_origins=["http://localhost:3000", "http://44.200.155.84"],  # frontend URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-class ConnectionManager:
+class WebSocketManager:
     def __init__(self):
-        self.active_connections: List[WebSocket] = []
+        self.active_connections: Set[WebSocket] = set()
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
-        self.active_connections.append(websocket)
+        self.active_connections.add(websocket)
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
 
-    async def broadcast(self, message: Dict[str, Any]):
+    async def broadcast(self, message: dict):
         for connection in self.active_connections:
-            await connection.send_json(message)
+            try:
+                await connection.send_json(message)
+            except:
+                # If sending fails, we'll handle the cleanup in the main WebSocket route
+                pass
 
 
-manager = ConnectionManager()
+websocket_manager = WebSocketManager()
 
 
 class SimulationManager:
@@ -132,9 +140,9 @@ class SimulationManager:
 
         # Initialize votes and predictions data
         self.votes_data = [
-            {"member": "Regional Pragmatist", "vote": "-9999.00%"},
-            {"member": "Academic Balancer", "vote": "-9999.00%"},
-            {"member": "Central Policymaker", "vote": "-9999.00%"},
+            {"member": "Regional Pragmatist", "vote": "-9999.00%", "policy_vote": ""},
+            {"member": "Academic Balancer", "vote": "-9999.00%", "policy_vote": ""},
+            {"member": "Central Policymaker", "vote": "-9999.00%", "policy_vote": ""},
         ]
 
         self.predictions_data = [
@@ -171,9 +179,9 @@ class SimulationManager:
 
         # Reset votes and predictions
         self.votes_data = [
-            {"member": "Regional Pragmatist", "vote": "-9999.00%"},
-            {"member": "Academic Balancer", "vote": "-9999.00%"},
-            {"member": "Central Policymaker", "vote": "-9999.00%"},
+            {"member": "Regional Pragmatist", "vote": "-9999.00%", "policy_vote": ""},
+            {"member": "Academic Balancer", "vote": "-9999.00%", "policy_vote": ""},
+            {"member": "Central Policymaker", "vote": "-9999.00%", "policy_vote": ""},
         ]
 
         self.predictions_data = [
@@ -247,6 +255,15 @@ class SimulationManager:
                     crew.task_callback = self.task_callback
                     crew.step_callback = self.step_callback
                     result = crew.kickoff()
+
+                    # Ensure result is a properly formatted JSON string
+                    if isinstance(result, str):
+                        result = result.strip()
+                        if result.startswith("'") and result.endswith("'"):
+                            result = result[1:-1]  # Remove surrounding quotes
+                        if result.startswith('"') and result.endswith('"'):
+                            result = result[1:-1]  # Remove surrounding quotes
+
                     self.crew_results = result
                     self.is_running = False
                     self.progress = 100
@@ -302,6 +319,17 @@ class SimulationManager:
             }
             self._add_to_conversation_logs(log_entry)
         else:
+            print(f"\n=== Task Callback for {task_name} ===")
+            # Process task output for vote-related tasks
+            if task_name in [
+                "regional_vote",
+                "academic_vote",
+                "central_vote",
+                "other_summary",
+            ]:
+                print(f"Processing output for {task_name}")
+                self._process_task_output(task_name, output)
+
             # Update progress
             if task_name in self.task_sequence:
                 task_index = self.task_sequence.index(task_name)
@@ -331,8 +359,8 @@ class SimulationManager:
 
     def step_callback(
         self,
-        agent,
-        task,
+        agent=None,
+        task=None,
         step=None,
         input_message=None,
         llm_response=None,
@@ -439,66 +467,175 @@ class SimulationManager:
             return
 
         try:
-            # Parse the final results JSON
-            final_results = json.loads(self.crew_results)
+            # Convert result to string if it isn't already
+            result_str = str(self.crew_results)
 
-            # Update FOMC statement
-            if "fomc_public_statement" in final_results:
-                self.fomc_statement = final_results["fomc_public_statement"]
+            # Find the JSON object in the text
+            # Look for the last occurrence of a JSON-like structure
+            self.fomc_statement = result_str
 
-            # Update votes
-            if "rate_votes" in final_results:
-                self.votes_data = final_results["rate_votes"]
+            #     # Extract just the JSON part
+            #     json_str = result_str[json_start : json_end + 1]
 
-            # Update predictions
-            if "rate_predictions" in final_results:
-                self.predictions_data = final_results["rate_predictions"]
+            #     # Clean up the JSON string
+            #     # Remove any escaped quotes
+            #     json_str = json_str.replace('\\"', '"')
+            #     # Remove any double curly braces
+            #     json_str = json_str.replace("{{", "{").replace("}}", "}")
+
+            #     # Parse the JSON
+            #     final_results = json.loads(json_str)
+
+            #     # Update FOMC statement
+            #     if "fomc_public_statement" in final_results:
+            #         self.fomc_statement = final_results["fomc_public_statement"]
+
+            #     # Update votes
+            #     if "rate_votes" in final_results:
+            #         self.votes_data = final_results["rate_votes"]
+
+            #     # Update predictions
+            #     if "rate_predictions" in final_results:
+            #         self.predictions_data = final_results["rate_predictions"]
+
+            # else:
+            #     # If no JSON found, treat the entire output as the FOMC statement
+            #     self.fomc_statement = result_str
 
             await self.broadcast_state()
 
         except Exception as e:
-            self.error = f"Error processing final results: {str(e)}"
+            self.error = (
+                f"Error processing final results: {str(e)}\nResult:\n{result_str}"
+            )
             await self.broadcast_state()
 
+    def _format_output(self, output):
+        """Format output for display"""
+        if output is None:
+            return "No output available"
 
-simulation = SimulationManager(manager)
+        if isinstance(output, str):
+            return output
+
+        try:
+            return str(output)
+        except:
+            return "Could not format output"
+
+    def _process_task_output(self, task_name, output):
+        """Process the output of specific tasks"""
+        try:
+            print(f"\n=== Processing Task: {task_name} ===")
+            output_text = self._format_output(output)
+            print(f"Raw output text: {output_text[:200]}...")  # Print first 200 chars
+            index = -1  # Initialize index with invalid value
+            member = "Unknown"  # Initialize member with default value
+
+            if task_name == "other_summary":
+                print("Processing other_summary task")
+                self.fomc_statement = output_text
+
+            elif task_name in ["regional_vote", "academic_vote", "central_vote"]:
+                print(f"\nProcessing vote task: {task_name}")
+                # Extract member type from task name
+                member_type = task_name.split("_")[0].capitalize()
+                print(f"Member type: {member_type}")
+
+                if member_type == "Regional":
+                    member = "Regional Pragmatist"
+                    index = 0
+                elif member_type == "Academic":
+                    member = "Academic Balancer"
+                    index = 1
+                elif member_type == "Central":
+                    member = "Central Policymaker"
+                    index = 2
+                print(f"Selected member: {member}, index: {index}")
+
+                if index >= 0:  # Only process if we have a valid index
+                    # Extract vote
+                    vote_match = re.search(
+                        r"INTEREST RATE VOTE:\s*([-+]?\d+\.?\d*%)", output_text
+                    )
+                    if vote_match:
+                        vote = vote_match.group(1)
+                        print(f"Found vote: {vote}")
+                        self.votes_data[index]["vote"] = vote
+                    else:
+                        print("No vote match found in text")
+
+                    # Extract policy vote
+                    policy_match = re.search(
+                        r"POLICY VOTE:\s*(.+?)(?=\n|INTEREST|$)", output_text
+                    )
+                    if policy_match:
+                        policy = policy_match.group(1).strip()
+                        print(f"Found policy vote: {policy}")
+                        self.votes_data[index]["policy_vote"] = policy
+                    else:
+                        print("No policy vote match found in text")
+
+                    # Extract prediction
+                    prediction_match = re.search(
+                        r"PREDICTION FOR 2025:\s*([-+]?\d+\.?\d*%)", output_text
+                    )
+                    if prediction_match:
+                        prediction = prediction_match.group(1)
+                        print(f"Found prediction: {prediction}")
+                        self.predictions_data[index]["prediction"] = prediction
+                    else:
+                        print("No prediction match found in text")
+
+                    print(f"\nUpdated data for {member}:")
+                    print(f"Votes data: {self.votes_data[index]}")
+                    print(f"Predictions data: {self.predictions_data[index]}")
+
+        except Exception as e:
+            print(f"\nError in _process_task_output: {str(e)}")
+            print(f"Task name: {task_name}")
+            print(f"Output text: {output_text[:200]}...")  # Print first 200 chars
+            traceback.print_exc()
+
+
+simulation_manager = SimulationManager(websocket_manager)
 
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+    await websocket_manager.connect(websocket)
     try:
-        await websocket.send_json(simulation.get_current_state())
+        await websocket.send_json(simulation_manager.get_current_state())
 
         while True:
             data = await websocket.receive_json()
             if data.get("action") == "start_simulation":
-                asyncio.create_task(simulation.run_simulation())
+                asyncio.create_task(simulation_manager.run_simulation())
             elif data.get("action") == "reset_simulation":
-                simulation.reset()
-                await websocket.send_json(simulation.get_current_state())
+                simulation_manager.reset()
+                await websocket.send_json(simulation_manager.get_current_state())
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        websocket_manager.disconnect(websocket)
 
 
 @app.get("/api/status")
 async def get_status():
     """Get the current simulation status via REST API"""
-    return simulation.get_current_state()
+    return simulation_manager.get_current_state()
 
 
 @app.post("/api/start")
 async def start_simulation():
     """Start the simulation via REST API"""
-    if not simulation.is_running:
-        asyncio.create_task(simulation.run_simulation())
+    if not simulation_manager.is_running:
+        asyncio.create_task(simulation_manager.run_simulation())
     return {"status": "started"}
 
 
 @app.post("/api/reset")
 async def reset_simulation():
     """Reset the simulation via REST API"""
-    simulation.reset()
+    simulation_manager.reset()
     return {"status": "reset"}
 
 
@@ -568,7 +705,7 @@ class DateRequest(BaseModel):
 @app.post("/api/set-date")
 async def set_date(request: DateRequest):
     """Set the selected date for the simulation"""
-    if simulation.is_running:
+    if simulation_manager.is_running:
         return JSONResponse(
             status_code=400,
             content={"message": "Cannot change date while simulation is running"},
@@ -592,9 +729,9 @@ async def set_date(request: DateRequest):
             },
         )
 
-    simulation.selected_date = request.date
-    simulation.crew_instance = BnyCapstoneCrew(date=request.date)
-    simulation.reset()
+    simulation_manager.selected_date = request.date
+    simulation_manager.crew_instance = BnyCapstoneCrew(date=request.date)
+    simulation_manager.reset()
     return {"status": "success", "date": request.date}
 
 
