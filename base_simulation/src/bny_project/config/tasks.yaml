@@ -1,37 +1,17 @@
 simulation_round1:
   description: >
-    Conduct a first simulation round using a past Federal Reserve meeting event. Provide each agent with economic indicators and meeting conditions from January 2022.
-    Each agent must vote on whether they would have increased or decreased the Federal Funds Target Rate by 25 or 50 bps under those conditions. 
-    Their justifications must only reference the knowledge sources before Jan 2022. 
+    Conduct a simulation round using a past Federal Reserve meeting event. Ask each agent to first learn from historical macro file where "Change in Target Rate" is the dependent variable and other columns are independent variables.
+    Then, Each agent must vote on whether they would have increased or decreased the Federal Funds Target Rate by 25 or by 50 bps for December 2017 FOMC meeting. 
+    Their justifications must only reference the knowledge sources before December 2017. 
     They must compare the economic conditions at that time to similar historical events to support their decisions.
   expected_output: >
-    A summary of each agent’s vote, reasoning, and historical comparisons during the simulation round. Include references to which historical examples and specific metrics were cited. 
-
+    A summary in json format as follows: {"exact_historical_dates_referenced": ["year1-year2", "year3-year4",..., "year-year"], "exact_metrics_mentioned": ["Metric 1", "Metric 2",..., "Metric n"], "rate_votes": [{"member": "member_name1", "vote": "#.##%"}, {"member": "member_name2", "vote": "#.##%"}, {"member": "member_name3", "vote": "#.##%"}], "rate_predictions": [{"member": "member_name1", "prediction": "#.##%"},{"member": "member_name2", "prediction": "#.##%"}, {"member": "member_name3", "prediction": "#.##%"}],} every single one of the 3 members should be included in rate_votes and rate_predictions.
 
 reveal_and_learn1:
   description: >
-    Reveal the actual result "maintain the rate" to all agents. 
+    Reveal the actual result "increase the rate by 25 bps" to all agents. 
     Instruct them to reflect on their initial decision and analyze why the Fed made its choice. 
     Each agent should briefly explain whether their original vote was correct or if they should have adjusted based on overlooked factors. 
     Emphasize that they should be more cautious and use all available knowledge sources to refine their upcoming votes.
   expected_output: >
     A short reflection from each agent explaining whether their simulation vote was accurate or if they miscalculated. If they miscalculated, they should consider to make a more precise prediction in the next round.
-
-simulation_round2:
-  description: >
-    Conduct a second simulation round using a past Federal Reserve meeting event. Provide each agent with economic indicators and meeting conditions before February 2023.
-    Each agent must vote on whether they would have increased or decreased the Federal Funds Target Rate by 25 or 50 bps under those conditions. 
-    Their justifications must only reference the knowledge sources before February 2023. 
-    Agents should compare the economic conditions at that time to similar historical events to support their decisions.
-  expected_output: >
-    A summary of each agent’s vote, reasoning, and historical comparisons during the simulation round. Include references to which historical examples and specific metrics were cited. 
-
-
-reveal_and_learn2:
-  description: >
-    Reveal the actual result "increase by 25 bps" to all agents. 
-    Instruct them to reflect on their initial decision and analyze why the Fed made its choice. 
-    Each agent should briefly explain whether their original vote was correct or if they should have adjusted based on overlooked factors. 
-    Emphasize that they should be more cautious and use all available knowledge sources to refine their upcoming votes.
-  expected_output: >
-    A short reflection from each agent explaining whether their simulation vote was accurate or if they miscalculated. This prepares them to make a more precise prediction in the next round.
