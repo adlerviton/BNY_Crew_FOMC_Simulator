@@ -240,7 +240,7 @@ Our goal was to move beyond static, opaque prediction systems toward a transpare
 * **Integration Potential:** The model is built for easy incorporation into platforms like BNY’s Eliza, allowing analysts to test custom scenarios, add proprietary data, or generate explainable FOMC-style reports.
 * **Scalability:** Thanks to its modularity and token-efficient design, Fedsight AI can be extended to other central bank settings or adapted for real-time forecasting.
 
-Ultimately, our team helps procide a balance of the following: **accuracy meets interpretability**, and **simulation enables foresight**.
+Ultimately, our team helps provide a balance of the following: **accuracy meets interpretability**, and **simulation enables foresight**.
 
 ## Demo
 We provide a demo in [`/demo](./demo)
