@@ -230,14 +230,12 @@ These results show that our framework not only predicts more accurately but also
 * **Faithfulness to FOMC Rationale:** Reasoning similarity scores show that our system's justifications align semantically with actual statements, revealing a deep understanding of FOMC communication style and themes.
 * **Efficiency:** By reducing token usage through Chain of Draft prompting, we not only cut computational cost but also streamline model outputs for integration into downstream tools (e.g., dashboards, summaries).
 
-This comprehensive performance highlights the value of our hybrid architecture: blending macroeconomic modeling, agent-based simulation, and in-context learning.
-
 ## Connecting Back to Goals
 
 Our goal was to move beyond static, opaque prediction systems toward a transparent, modular simulation of FOMC decision-making. The results confirm that Fedsight AI achieves this across multiple dimensions:
 
 * **Predictive Power:** Achieves state-of-the-art accuracy on current and historical test sets, outperforming traditional models used in industry and academia.
-* **Interpretability:** Every agent decision includes a rationale that can be audited, traced back to inputs, and compared with FOMC communications—key for internal validation and regulatory compliance.
+* **Interpretability:** Every agent decision includes a rationale that can be audited, traced back to inputs, and compared with FOMC communications—key for internal validation.
 * **Stability & Reliability:** High voting stability ensures that results are repeatable and dependable.
 * **Integration Potential:** The model is built for easy incorporation into platforms like BNY’s Eliza, allowing analysts to test custom scenarios, add proprietary data, or generate explainable FOMC-style reports.
 * **Scalability:** Thanks to its modularity and token-efficient design, Fedsight AI can be extended to other central bank settings or adapted for real-time forecasting.
