@@ -152,7 +152,6 @@ To ensure realistic yet efficient simulation:
 
 ### Evaluation Metrics
 
-* **Rate Change Accuracy**
 #### Average Rate Change Accuracy
 Whether the model correctly predicts the overall rate decision for each meeting.
 
@@ -160,7 +159,6 @@ Whether the model correctly predicts the overall rate decision for each meeting.
 <img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BAverage&space;Rate&space;Change&space;Accuracy%7D=%5Cfrac%7B1%7D%7BN%7D%5Csum_%7Bi=1%7D%5E%7BN%7D%5Cmathbf%7B1%7D%5Cleft(%5Chat%7B%5Ctext%7BVote%7D%7D_i=%5Ctext%7BVote%7D%5E*_i%5Cright)$$" />
 </p>
 
-* **Individual Voting Accuracy**
 #### Average Individual Voting Accuracy  
 Whether each agent correctly predicts the true rate decision in each meeting.
 
@@ -168,7 +166,6 @@ Whether each agent correctly predicts the true rate decision in each meeting.
 <img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BAverage&space;Individual&space;Voting&space;Accuracy%7D=%5Cfrac%7B1%7D%7BN%7D%5Csum_%7Bi=1%7D%5E%7BN%7D%5Cleft(%5Cfrac%7B1%7D%7BK%7D%5Csum_%7Bk=1%7D%5E%7BK%7D%5Cmathbf%7B1%7D%5Cleft(%5Chat%7B%5Ctext%7BVote%7D%7D_%7Bi,k%7D=%5Ctext%7BVote%7D%5E*_i%5Cright)%5Cright)$$" />
 </p>
 
-* **Voting Stability**
 #### Average Voting Stability  
 Evaluates the consistency of model predictions for individual agent votes across simulation runs for each meeting.
 
@@ -176,26 +173,26 @@ Evaluates the consistency of model predictions for individual agent votes across
 <img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BAverage&space;Voting&space;Stability%7D=%5Cfrac%7B1%7D%7BNJK%7D%5Csum_%7Bi=1%7D%5E%7BN%7D%5Csum_%7Bj=1%7D%5E%7BJ%7D%5Csum_%7Bk=1%7D%5E%7BK%7D%5Cmathbf%7B1%7D%5Cleft(%5Cwidehat%7B%5Ctext%7BVote%7D%7D_%7Bi,j,k%7D=%5Cwidehat%7B%5Ctext%7BVote%7D%7D_%7Bi,k%7D%5E%7B%5Ctext%7Bmode%7D%7D%5Cright)$$" />
 </p>
 
-* **Reasoning Similarity**
+####  Reasoning Similarity
 Evaluate the cosine similarity between the embeddings of the generated statement compared to the actual FOMC statement.
 
 <p align="center">
-<img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BAverage&space;Voting&space;Stability%7D=%5Cfrac%7B1%7D%7BNJK%7D%5Csum_%7Bi=1%7D%5E%7BN%7D%5Csum_%7Bj=1%7D%5E%7BJ%7D%5Csum_%7Bk=1%7D%5E%7BK%7D%5Cmathbf%7B1%7D%5Cleft(%5Cwidehat%7B%5Ctext%7BVote%7D%7D_%7Bi,j,k%7D=%5Cwidehat%7B%5Ctext%7BVote%7D%7D_%7Bi,k%7D%5E%7B%5Ctext%7Bmode%7D%7D%5Cright)$$" />
+<img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BAverage%20Similarity%7D%20=%20%5Cfrac%7B1%7D%7Bn%7D%5Csum_%7Bi%3D1%7D%5En%5Cfrac%7BS_i%20%5Ccdot%20S_%7B%5Ctext%7Bactual%7D%7D%7D%7B%5C%7CS_i%5C%7C%5C%2C%5C%7CS_%7B%5Ctext%7Bactual%7D%7D%5C%7C%7D$$" />
 </p>
 
-* **Token Usage**
+
+#### Token Usage
 How many tokens do we save to optimize speed and lower costs?
 
 <p align="center">
-<img src="https://latex.codecogs.com/svg.image?%5C;%5Ctext%7BMAE%7D=%5Cfrac%7B1%7D%7Bn%7D%5Csum_%7Bi=1%7D%5E%7Bn%7D%5Cleft%7Cy_i-%5Chat%7By%7D_i%5Cright%7C%5C;" />
+<img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BTotal%20Tokens%7D%20=%20%5Ctext%7BPrompt%20Tokens%7D%20%2B%20%5Ctext%7BCompletion%20Tokens%7D$$" />
 </p>
-
 
 * **Mean Absolute Error (MAE)**
 How far off on average are the model's incorrect predictions?
 
 <p align="center">
-<img src="https://latex.codecogs.com/svg.image?%5C;%5Ctext%7BMAE%7D=%5Cfrac%7B1%7D%7Bn%7D%5Csum_%7Bi=1%7D%5E%7Bn%7D%5Cleft%7Cy_i-%5Chat%7By%7D_i%5Cright%7C%5C;" />
+<img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BMAE%7D%20=%20%5Cfrac%7B1%7D%7Bn%7D%5Csum_%7Bi%3D1%7D%5En%5Cleft%7C%20y_i%20-%20%5Chat%7By%7D_i%20%5Cright%7C$$" />
 </p>
 
 
@@ -245,7 +242,7 @@ Our goal was to move beyond static, opaque prediction systems toward a transpare
 * **Integration Potential:** The model is built for easy incorporation into platforms like BNY’s Eliza, allowing analysts to test custom scenarios, add proprietary data, or generate explainable FOMC-style reports.
 * **Scalability:** Thanks to its modularity and token-efficient design, Fedsight AI can be extended to other central bank settings or adapted for real-time forecasting.
 
-Ultimately, Fedsight AI positions BNY to adopt the next generation of macroeconomic modeling tools—where **accuracy meets interpretability**, and **simulation enables foresight**.
+Ultimately, our team helps procide a balance of the following: **accuracy meets interpretability**, and **simulation enables foresight**.
 
 ## Demo
 We provide a demo in [`/demo](./demo)
