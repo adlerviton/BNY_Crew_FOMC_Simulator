@@ -92,7 +92,7 @@ We first developed a baseline Ordinal Random Forest model as an industry compara
 * **Accuracy:** 62.5% on 2023–2024 meetings
 * **Limitation:** No interpretability or natural language explanation
 
-We also used MiniFed by Seok et al. as a baseline but was restricted to 2018 for their test set as Tealbook A releases 5 years after the meeting.
+We also used MiniFed by Seok et al. as a baseline but was restricted to 2018 for their test set as Tealbook A releases 5 years after the meeting and budgeting expenses to replicate their exact paper on 2019.
 
 ### 2. LLM-Based Multi-Agent Simulation
 
