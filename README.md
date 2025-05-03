@@ -188,7 +188,7 @@ How many tokens do we save to optimize speed and lower costs?
 <img src="https://latex.codecogs.com/svg.image?\bg_black\color{white}$$%5Ctext%7BTotal%20Tokens%7D%20=%20%5Ctext%7BPrompt%20Tokens%7D%20%2B%20%5Ctext%7BCompletion%20Tokens%7D$$" />
 </p>
 
-* **Mean Absolute Error (MAE)**
+#### Mean Absolute Error (MAE)
 How far off on average are the model's incorrect predictions?
 
 <p align="center">
